@@ -6,12 +6,23 @@ type ColumnProps<T> = {
   isHeader?: boolean;
   element?: T;
   children: React.ReactNode | RenderChild<T>;
+  as?: React.ReactElement;
 };
 
-export function Column<T>({ children, isHeader, element }: ColumnProps<T>) {
-  if (typeof children === "function") {
-    return isHeader ? <th>{children()}</th> : <td>{children(element)}</td>;
+export function Column<T>({ children, isHeader, element, as }: ColumnProps<T>) {
+  let wrapper = <td />;
+  if (isHeader) {
+    wrapper = <th />;
+  }
+  if (as) {
+    wrapper = as;
   }
 
-  return isHeader ? <th>{children}</th> : <td>{children}</td>;
+  if (typeof children === "function") {
+    return isHeader
+      ? React.cloneElement(wrapper, undefined, children())
+      : React.cloneElement(wrapper, undefined, children(element));
+  }
+
+  return React.cloneElement(wrapper, undefined, children);
 }

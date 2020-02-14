@@ -57,3 +57,26 @@ export const styledDatatable = () => (
 styledDatatable.story = {
   name: "Styled table"
 };
+
+export const withCustomComponent = () => (
+  <Datatable data={data}>
+    <Table style={{ width: "100%" }}>
+      <Header>
+        <Row>
+          <Column>Name</Column>
+          <Column>First Name</Column>
+        </Row>
+      </Header>
+      <Body>
+        <Row>
+          <Column as={<th />}>{element => element.name}</Column>
+          <Column>{element => element.firstName}</Column>
+        </Row>
+      </Body>
+    </Table>
+  </Datatable>
+);
+
+withCustomComponent.story = {
+  name: "With custom column component"
+};
