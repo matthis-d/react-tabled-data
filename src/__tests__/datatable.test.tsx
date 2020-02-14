@@ -189,5 +189,74 @@ describe("Datatable", () => {
 
       expect(container.getElementsByClassName("some-class")).toHaveLength(4);
     });
+
+    it("should be possible to add some attributes to an header", () => {
+      const { container } = render(
+        <Datatable data={data}>
+          <Table>
+            <Header className="some-class">
+              <Row>
+                <Column>Name</Column>
+                <Column>First Name</Column>
+              </Row>
+            </Header>
+            <Body>
+              <Row>
+                <Column>{(element?: DataType) => element?.name}</Column>
+                <Column>{(element?: DataType) => element?.firstName}</Column>
+              </Row>
+            </Body>
+          </Table>
+        </Datatable>
+      );
+
+      expect(container.getElementsByClassName("some-class")).toHaveLength(1);
+    });
+
+    it("should be possible to add some attributes to a body", () => {
+      const { container } = render(
+        <Datatable data={data}>
+          <Table>
+            <Header>
+              <Row>
+                <Column>Name</Column>
+                <Column>First Name</Column>
+              </Row>
+            </Header>
+            <Body className="some-class">
+              <Row>
+                <Column>{(element?: DataType) => element?.name}</Column>
+                <Column>{(element?: DataType) => element?.firstName}</Column>
+              </Row>
+            </Body>
+          </Table>
+        </Datatable>
+      );
+
+      expect(container.getElementsByClassName("some-class")).toHaveLength(1);
+    });
+
+    it("should be possible to add some attributes to a row", () => {
+      const { container } = render(
+        <Datatable data={data}>
+          <Table>
+            <Header>
+              <Row>
+                <Column>Name</Column>
+                <Column>First Name</Column>
+              </Row>
+            </Header>
+            <Body>
+              <Row className="some-class">
+                <Column>{(element?: DataType) => element?.name}</Column>
+                <Column>{(element?: DataType) => element?.firstName}</Column>
+              </Row>
+            </Body>
+          </Table>
+        </Datatable>
+      );
+
+      expect(container.getElementsByClassName("some-class")).toHaveLength(4);
+    });
   });
 });

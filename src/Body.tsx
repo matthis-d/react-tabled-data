@@ -1,13 +1,16 @@
 import * as React from "react";
-import TableProps from "./types/TableProps";
 import { isValidRow } from "./utils/isValidRow";
 import { useTableData } from "./utils/useTableData";
 
-export function Body({ children }: TableProps) {
+type BodyProps = {
+  children: React.ReactNode;
+} & React.HTMLAttributes<HTMLTableSectionElement>;
+
+export function Body({ children, ...otherProps }: BodyProps) {
   const data = useTableData();
 
   return (
-    <tbody>
+    <tbody {...otherProps}>
       {React.Children.map(children, child =>
         isValidRow(child)
           ? data.map(element => React.cloneElement(child, { element }))

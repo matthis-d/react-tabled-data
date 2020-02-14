@@ -5,11 +5,11 @@ type RowProps = {
   children: React.ReactNode;
   isHeader?: boolean;
   element?: any;
-};
+} & React.HTMLAttributes<HTMLTableRowElement>;
 
-export function Row({ children, isHeader, element }: RowProps) {
+export function Row({ children, isHeader, element, ...otherProps }: RowProps) {
   return (
-    <tr>
+    <tr {...otherProps}>
       {React.Children.map(children, child =>
         isValidColumn(child)
           ? React.cloneElement(child, { isHeader, element })
