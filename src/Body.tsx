@@ -1,6 +1,6 @@
 import * as React from "react";
 import TableProps from "./types/TableProps";
-import { isValidColumn } from "./utils/isValidColumn";
+import { isValidRow } from "./utils/isValidRow";
 import { useTableData } from "./utils/useTableData";
 
 export function Body({ children }: TableProps) {
@@ -8,15 +8,11 @@ export function Body({ children }: TableProps) {
 
   return (
     <tbody>
-      {data.map(element => (
-        <tr key={JSON.stringify(element)}>
-          {React.Children.map(children, child => {
-            return isValidColumn(child)
-              ? React.cloneElement(child, { element })
-              : null;
-          })}
-        </tr>
-      ))}
+      {React.Children.map(children, child =>
+        isValidRow(child)
+          ? data.map(element => React.cloneElement(child, { element }))
+          : child
+      )}
     </tbody>
   );
 }

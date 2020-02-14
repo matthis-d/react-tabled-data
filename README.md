@@ -1,7 +1,12 @@
 # React tabled data
 
+React components to create declarative datatables
+
 ## TODO
 
+This project is currently being developped, there is a lot to do.
+
+- [ ] Expand a row
 - [ ] Columns attributes
 - [ ] Sort
 - [ ] Pagination

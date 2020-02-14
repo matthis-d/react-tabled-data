@@ -1,17 +1,15 @@
 import * as React from "react";
-import { isValidColumn } from "./utils/isValidColumn";
+import { isValidRow } from "./utils/isValidRow";
 import TableProps from "./types/TableProps";
 
 export function Header({ children }: TableProps) {
   return (
     <thead>
-      <tr>
-        {React.Children.map(children, child => {
-          return isValidColumn(child)
-            ? React.cloneElement(child, { isHeader: true })
-            : null;
-        })}
-      </tr>
+      {React.Children.map(children, child => {
+        return isValidRow(child)
+          ? React.cloneElement(child, { isHeader: true })
+          : child;
+      })}
     </thead>
   );
 }

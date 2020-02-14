@@ -1,21 +1,11 @@
 import * as React from "react";
 
 type ColumnProps<T> = {
-  renderHeader?: () => React.ReactNode;
-  renderValue: (element?: T) => React.ReactNode;
   isHeader?: boolean;
-  element?: any;
+  element?: T;
+  children: (element?: T) => React.ReactNode;
 };
 
-export function Column<T>({
-  renderHeader,
-  renderValue,
-  isHeader,
-  element
-}: ColumnProps<T>) {
-  if (isHeader) {
-    return renderHeader ? <th>{renderHeader()}</th> : <th />;
-  }
-
-  return <td>{renderValue(element)}</td>;
+export function Column<T>({ children, isHeader, element }: ColumnProps<T>) {
+  return isHeader ? <th>{children()}</th> : <td>{children(element)}</td>;
 }

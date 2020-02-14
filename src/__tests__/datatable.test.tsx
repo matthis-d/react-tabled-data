@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render, RenderResult } from "@testing-library/react";
-import { Datatable, Column, Table } from "..";
+import { Datatable, Column, Table, Body, Header, Row } from "..";
 
 describe("Datatable", () => {
   it("should render its children", () => {
@@ -35,14 +35,18 @@ describe("Datatable", () => {
         output = render(
           <Datatable data={data}>
             <Table>
-              <Column
-                renderHeader={() => "Name"}
-                renderValue={(element?: DataType) => element?.name}
-              />
-              <Column
-                renderHeader={() => "First Name"}
-                renderValue={(element?: DataType) => element?.firstName}
-              />
+              <Header>
+                <Row>
+                  <Column>{() => "Name"}</Column>
+                  <Column>{() => "First Name"}</Column>
+                </Row>
+              </Header>
+              <Body>
+                <Row>
+                  <Column>{(element?: DataType) => element?.name}</Column>
+                  <Column>{(element?: DataType) => element?.firstName}</Column>
+                </Row>
+              </Body>
             </Table>
           </Datatable>
         );
@@ -72,8 +76,12 @@ describe("Datatable", () => {
       const { queryAllByText } = render(
         <Datatable data={data}>
           <Table>
-            <Column renderValue={(element?: DataType) => element?.name} />
-            <Column renderValue={(element?: DataType) => element?.firstName} />
+            <Body>
+              <Row>
+                <Column>{(element?: DataType) => element?.name}</Column>
+                <Column>{(element?: DataType) => element?.firstName}</Column>
+              </Row>
+            </Body>
           </Table>
         </Datatable>
       );
@@ -86,11 +94,18 @@ describe("Datatable", () => {
       const { queryAllByText, container } = render(
         <Datatable data={data}>
           <Table>
-            <Column renderValue={(element?: DataType) => element?.name} />
-            <Column
-              renderHeader={() => "First Name"}
-              renderValue={(element?: DataType) => element?.firstName}
-            />
+            <Header>
+              <Row>
+                <Column>{() => null}</Column>
+                <Column>{() => "First Name"}</Column>
+              </Row>
+            </Header>
+            <Body>
+              <Row>
+                <Column>{(element?: DataType) => element?.name}</Column>
+                <Column>{(element?: DataType) => element?.firstName}</Column>
+              </Row>
+            </Body>
           </Table>
         </Datatable>
       );

@@ -26,7 +26,7 @@
   "prettier": {},
   "name": "react-tabled-data",
   "author": "matthis-d",
-  "module": "dist/awesome-react-table.esm.js",
+  "module": "dist/react-tabled-data.esm.js",
   "devDependencies": {
     "@babel/core": "^7.8.3",
     "@storybook/addon-actions": "^5.3.3",
@@ -46,5 +46,8 @@
     "tsdx": "^0.12.3",
     "tslib": "^1.10.0",
     "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "utils": "^0.3.1"
   }
 }
