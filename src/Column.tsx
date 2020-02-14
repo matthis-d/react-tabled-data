@@ -9,7 +9,13 @@ type ColumnProps<T> = {
   as?: React.ReactElement;
 };
 
-export function Column<T>({ children, isHeader, element, as }: ColumnProps<T>) {
+export function Column<T>({
+  children,
+  isHeader,
+  element,
+  as,
+  ...otherProps
+}: ColumnProps<T> & Omit<React.HTMLAttributes<HTMLElement>, "children">) {
   let wrapper = <td />;
   if (isHeader) {
     wrapper = <th />;
@@ -20,9 +26,9 @@ export function Column<T>({ children, isHeader, element, as }: ColumnProps<T>) {
 
   if (typeof children === "function") {
     return isHeader
-      ? React.cloneElement(wrapper, undefined, children())
-      : React.cloneElement(wrapper, undefined, children(element));
+      ? React.cloneElement(wrapper, otherProps, children())
+      : React.cloneElement(wrapper, otherProps, children(element));
   }
 
-  return React.cloneElement(wrapper, undefined, children);
+  return React.cloneElement(wrapper, otherProps, children);
 }

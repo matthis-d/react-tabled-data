@@ -164,5 +164,30 @@ describe("Datatable", () => {
 
       expect(container.getElementsByTagName("th")).toHaveLength(6);
     });
+
+    it("should be possible to add some attributes to the column", () => {
+      const { container } = render(
+        <Datatable data={data}>
+          <Table>
+            <Header>
+              <Row>
+                <Column>Name</Column>
+                <Column>First Name</Column>
+              </Row>
+            </Header>
+            <Body>
+              <Row>
+                <Column className="some-class">
+                  {(element?: DataType) => element?.name}
+                </Column>
+                <Column>{(element?: DataType) => element?.firstName}</Column>
+              </Row>
+            </Body>
+          </Table>
+        </Datatable>
+      );
+
+      expect(container.getElementsByClassName("some-class")).toHaveLength(4);
+    });
   });
 });
