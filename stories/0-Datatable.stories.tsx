@@ -17,8 +17,8 @@ export const simpleDatatable = () => (
     <Table>
       <Header>
         <Row>
-          <Column>{() => "Name"}</Column>
-          <Column>{() => "First Name"}</Column>
+          <Column>Name</Column>
+          <Column>First Name</Column>
         </Row>
       </Header>
       <Body>
@@ -40,8 +40,8 @@ export const styledDatatable = () => (
     <Table style={{ width: "100%" }}>
       <Header>
         <Row>
-          <Column>{() => "Name"}</Column>
-          <Column>{() => "First Name"}</Column>
+          <Column>Name</Column>
+          <Column>First Name</Column>
         </Row>
       </Header>
       <Body>

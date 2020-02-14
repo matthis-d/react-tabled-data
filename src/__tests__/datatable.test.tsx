@@ -114,5 +114,30 @@ describe("Datatable", () => {
       expect(queryAllByText("Doe")).toHaveLength(2);
       expect(queryAllByText("Dupont")).toHaveLength(2);
     });
+
+    it("should be be allowed to have a column with a static child", () => {
+      const { queryAllByText, container } = render(
+        <Datatable data={data}>
+          <Table>
+            <Header>
+              <Row>
+                <Column>Name</Column>
+                <Column>First Name</Column>
+              </Row>
+            </Header>
+            <Body>
+              <Row>
+                <Column>{(element?: DataType) => element?.name}</Column>
+                <Column>{(element?: DataType) => element?.firstName}</Column>
+              </Row>
+            </Body>
+          </Table>
+        </Datatable>
+      );
+
+      expect(container.getElementsByTagName("th")).toHaveLength(2);
+      expect(queryAllByText("Name")).toHaveLength(1);
+      expect(queryAllByText("First Name")).toHaveLength(1);
+    });
   });
 });
