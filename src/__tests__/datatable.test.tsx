@@ -1,6 +1,6 @@
 import * as React from "react";
-import { render, RenderResult } from "@testing-library/react";
-import { Datatable, Column, Table, Body, Header, Row } from "..";
+import { render, RenderResult, fireEvent } from "@testing-library/react";
+import { Datatable, Column, Table, Body, Header, Row, Pagination } from "..";
 
 describe("Datatable", () => {
   it("should render its children", () => {
@@ -257,6 +257,51 @@ describe("Datatable", () => {
       );
 
       expect(container.getElementsByClassName("some-class")).toHaveLength(4);
+    });
+
+    describe("Pagination", () => {
+      it("should display pageSize elements when given", () => {
+        const pageSize = 2;
+
+        const { container } = render(
+          <Datatable data={data} pageSize={pageSize}>
+            <Table>
+              <Body>
+                <Row>
+                  <Column>{(element?: DataType) => element?.name}</Column>
+                  <Column>{(element?: DataType) => element?.firstName}</Column>
+                </Row>
+              </Body>
+            </Table>
+          </Datatable>
+        );
+
+        expect(container.getElementsByTagName("tr")).toHaveLength(pageSize);
+      });
+
+      it("should update displayed elements when navigating in pages", () => {
+        const { getByTitle, queryAllByText } = render(
+          <Datatable data={data} pageSize={2}>
+            <Table>
+              <Body>
+                <Row>
+                  <Column>{(element?: DataType) => element?.name}</Column>
+                  <Column>{(element?: DataType) => element?.firstName}</Column>
+                </Row>
+              </Body>
+            </Table>
+            <Pagination />
+          </Datatable>
+        );
+
+        expect(queryAllByText("Doe")).toHaveLength(2);
+        expect(queryAllByText("Dupont")).toHaveLength(0);
+
+        fireEvent.click(getByTitle("Go to page 2"));
+
+        expect(queryAllByText("Doe")).toHaveLength(0);
+        expect(queryAllByText("Dupont")).toHaveLength(2);
+      });
     });
   });
 });

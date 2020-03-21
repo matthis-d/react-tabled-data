@@ -1,9 +1,9 @@
 import * as React from "react";
-import { TableContext } from "./Datatable";
 import TableProps from "./types/TableProps";
+import { useTableData } from "./contexts/TableContext";
 
 export function Table({ children, ...tableAttributes }: TableProps) {
-  const data = React.useContext(TableContext);
+  const data = useTableData;
 
   if (!data) {
     return null;

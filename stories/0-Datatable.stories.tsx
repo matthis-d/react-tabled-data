@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Datatable, Column, Row, Header, Body } from "@";
+import { Table, Datatable, Column, Row, Header, Body, Pagination } from "@";
 
 export default {
   title: "Datatable"
@@ -60,7 +60,7 @@ styledDatatable.story = {
 
 export const withCustomComponent = () => (
   <Datatable data={data}>
-    <Table style={{ width: "100%" }}>
+    <Table>
       <Header>
         <Row>
           <Column>Name</Column>
@@ -79,4 +79,28 @@ export const withCustomComponent = () => (
 
 withCustomComponent.story = {
   name: "With custom column component"
+};
+
+export const withPagination = () => (
+  <Datatable data={data} pageSize={2}>
+    <Table>
+      <Header>
+        <Row>
+          <Column>Name</Column>
+          <Column>First Name</Column>
+        </Row>
+      </Header>
+      <Body>
+        <Row>
+          <Column>{element => element.name}</Column>
+          <Column>{element => element.firstName}</Column>
+        </Row>
+      </Body>
+    </Table>
+    <Pagination />
+  </Datatable>
+);
+
+withPagination.story = {
+  name: "With pagination"
 };

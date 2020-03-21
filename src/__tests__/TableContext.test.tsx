@@ -1,7 +1,7 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { useTableData } from "../useTableData";
-import { Datatable } from "../../Datatable";
+import { useTableData } from "../contexts/TableContext";
+import { Datatable } from "../Datatable";
 
 describe("useTableData", () => {
   const FakeComponent = () => {

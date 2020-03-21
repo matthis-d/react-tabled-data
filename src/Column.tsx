@@ -7,15 +7,17 @@ type ColumnProps<T> = {
   element?: T;
   children: React.ReactNode | RenderChild<T>;
   as?: React.ReactElement;
-};
+  name?: string;
+} & Omit<React.HTMLAttributes<HTMLElement>, "children">;
 
 export function Column<T>({
   children,
   isHeader,
   element,
   as,
+  name,
   ...otherProps
-}: ColumnProps<T> & Omit<React.HTMLAttributes<HTMLElement>, "children">) {
+}: ColumnProps<T>) {
   let wrapper = <td />;
   if (isHeader) {
     wrapper = <th />;

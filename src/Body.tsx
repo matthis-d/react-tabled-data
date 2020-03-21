@@ -1,6 +1,6 @@
 import * as React from "react";
 import { isValidRow } from "./utils/isValidRow";
-import { useTableData } from "./utils/useTableData";
+import { useTableData } from "./contexts/TableContext";
 
 type BodyProps = {
   children: React.ReactNode;
