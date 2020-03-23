@@ -1,6 +1,17 @@
 import * as React from "react";
 import { render, RenderResult, fireEvent } from "@testing-library/react";
-import { Datatable, Column, Table, Body, Header, Row, Pagination } from "..";
+import {
+  Datatable,
+  Column,
+  Table,
+  Body,
+  Header,
+  Row,
+  Pagination,
+  PreviousPage,
+  NextPage,
+  GotoPage
+} from "..";
 
 describe("Datatable", () => {
   it("should render its children", () => {
@@ -260,6 +271,14 @@ describe("Datatable", () => {
     });
 
     describe("Pagination", () => {
+      type IdObject = { id: number };
+      let ids: IdObject[];
+      beforeEach(() => {
+        ids = new Array(800).fill(1).map((_, index) => ({
+          id: index + 1
+        }));
+      });
+
       it("should display pageSize elements when given", () => {
         const pageSize = 2;
 
@@ -301,6 +320,153 @@ describe("Datatable", () => {
 
         expect(queryAllByText("Doe")).toHaveLength(0);
         expect(queryAllByText("Dupont")).toHaveLength(2);
+      });
+
+      it("should display a limited number of pages", () => {
+        const { queryAllByTitle } = render(
+          <Datatable data={ids} pageSize={2}>
+            <Pagination displayedPages={5} />
+          </Datatable>
+        );
+
+        expect(queryAllByTitle(/Go to page/)).toHaveLength(5);
+      });
+
+      it("should display a limited number of 10 pages by default", () => {
+        const { queryAllByTitle } = render(
+          <Datatable data={ids} pageSize={2}>
+            <Pagination />
+          </Datatable>
+        );
+
+        expect(queryAllByTitle(/Go to page/)).toHaveLength(10);
+      });
+
+      it("should display current page in the middle, first and last page", () => {
+        const { getByTitle, queryAllByTitle } = render(
+          <Datatable data={ids} pageSize={2} initialPage={200}>
+            <Pagination />
+          </Datatable>
+        );
+
+        [1, 197, 198, 199, 200, 201, 202, 203, 204, 400].forEach(page => {
+          expect(getByTitle(`Go to page ${page}`)).toBeVisible();
+        });
+        expect(queryAllByTitle(/Go to page/)).toHaveLength(10);
+      });
+
+      it("should display first pages when current page is close to them, first and last page", () => {
+        const { getByTitle, queryAllByTitle } = render(
+          <Datatable data={ids} pageSize={2} initialPage={4}>
+            <Pagination />
+          </Datatable>
+        );
+
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 400].forEach(page => {
+          expect(getByTitle(`Go to page ${page}`)).toBeVisible();
+        });
+        expect(queryAllByTitle(/Go to page/)).toHaveLength(10);
+      });
+
+      it("should display last pages when current page is close to them, first and last page", () => {
+        const { getByTitle, queryAllByTitle } = render(
+          <Datatable data={ids} pageSize={2} initialPage={398}>
+            <Pagination />
+          </Datatable>
+        );
+
+        [1, 392, 393, 394, 395, 396, 397, 398, 399, 400].forEach(page => {
+          expect(getByTitle(`Go to page ${page}`)).toBeVisible();
+        });
+        expect(queryAllByTitle(/Go to page/)).toHaveLength(10);
+      });
+
+      it("should handle custom child components", () => {
+        const PageButton = ({ onClick, pageNumber, active }: any) => (
+          <button onClick={onClick} className={active ? "active" : ""}>
+            Go to page {pageNumber}
+          </button>
+        );
+
+        const { queryByText } = render(
+          <Datatable data={ids} pageSize={2} initialPage={3}>
+            <Pagination>
+              <div>Pagination's child</div>
+              <PreviousPage>
+                <button>{"<"}</button>
+              </PreviousPage>
+              <NextPage>
+                <button>{">"}</button>
+              </NextPage>
+              <GotoPage>
+                <PageButton />
+              </GotoPage>
+            </Pagination>
+          </Datatable>
+        );
+
+        expect(queryByText("Pagination's child")).toBeVisible();
+
+        [1, 2, 3, 4, 5, 5, 7, 8, 9, 400].forEach(page => {
+          expect(queryByText(`Go to page ${page}`)).toBeVisible();
+        });
+        expect(queryByText("<")).toBeVisible();
+        expect(queryByText(">")).toBeVisible();
+        expect(queryByText("Go to page 4")).toHaveClass("active");
+      });
+
+      it("should handle navigation from custom child components", () => {
+        const PageButton = ({ onClick, pageNumber, active }: any) => (
+          <button onClick={onClick} className={active ? "active" : ""}>
+            Go to page {pageNumber}
+          </button>
+        );
+
+        const { getByText } = render(
+          <Datatable data={ids} pageSize={2} initialPage={3}>
+            <Pagination>
+              <div>Pagination's child</div>
+              <PreviousPage>
+                <button>{"<"}</button>
+              </PreviousPage>
+              <NextPage>
+                <button>{">"}</button>
+              </NextPage>
+              <GotoPage>
+                <PageButton />
+              </GotoPage>
+            </Pagination>
+          </Datatable>
+        );
+
+        fireEvent.click(getByText("Go to page 2"));
+        expect(getByText("Go to page 2")).toHaveClass("active");
+
+        fireEvent.click(getByText("<"));
+        expect(getByText("Go to page 1")).toHaveClass("active");
+
+        fireEvent.click(getByText(">"));
+        expect(getByText("Go to page 2")).toHaveClass("active");
+      });
+
+      it("should use custom component as a wrapper when provided", () => {
+        const { container } = render(
+          <Datatable data={ids} pageSize={2} initialPage={398}>
+            <Pagination component={<nav />} />
+          </Datatable>
+        );
+
+        expect(container.getElementsByTagName("nav")).toHaveLength(1);
+      });
+
+      it("should display ", () => {
+        const { container } = render(
+          <Datatable data={ids} pageSize={2} initialPage={398}>
+            <Pagination component={<nav />} />
+          </Datatable>
+        );
+
+        expect(container.getElementsByTagName("nav")).toHaveLength(1);
       });
     });
   });

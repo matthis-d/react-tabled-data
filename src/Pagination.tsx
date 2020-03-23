@@ -4,6 +4,8 @@ import { usePage } from "./contexts/PageContext";
 type PaginationProps = {
   children?: React.ReactNode;
   className?: string;
+  displayedPages?: number;
+  component?: React.ReactElement;
 };
 
 type PageButtonProps = {
@@ -39,8 +41,12 @@ export function NextPage({ children }: PageButtonProps) {
 export function GotoPage({
   children,
   pageNumber
-}: PageButtonProps & { pageNumber: number }) {
+}: PageButtonProps & { pageNumber?: number }) {
   const { goTo, page } = usePage();
+
+  if (pageNumber === undefined) {
+    return null;
+  }
 
   if (!React.isValidElement(children)) {
     return null;
@@ -48,7 +54,8 @@ export function GotoPage({
 
   return React.cloneElement(children, {
     onClick: () => goTo(pageNumber - 1),
-    active: page === pageNumber - 1
+    active: page === pageNumber - 1,
+    pageNumber
   });
 }
 
@@ -74,37 +81,67 @@ function GenericPageButton({
   );
 }
 
-export function Pagination({ children, className }: PaginationProps) {
-  const { pageSize, pages } = usePage();
+function getPagesToDisplay(
+  initialPages: number[],
+  displayedPages: number,
+  page: number
+): number[] {
+  if (initialPages.length <= displayedPages) {
+    return initialPages;
+  }
+
+  const pagesToDisplay = [initialPages[0]];
+  const middleCount = displayedPages - 2;
+  let beginIndex = Math.max(
+    initialPages.indexOf(page + 1) - displayedPages / 2 + 1,
+    1
+  );
+
+  if (beginIndex + displayedPages > initialPages.length) {
+    beginIndex = Math.max(1, initialPages.length - displayedPages + 1);
+  }
+
+  pagesToDisplay.push(
+    ...initialPages.slice(beginIndex, beginIndex + middleCount)
+  );
+  pagesToDisplay.push(initialPages[initialPages.length - 1]);
+
+  return pagesToDisplay;
+}
+
+export function Pagination({
+  children,
+  className,
+  displayedPages = 10,
+  component
+}: PaginationProps) {
+  const { pageSize, pages, page } = usePage();
   if (!pageSize) {
     return null;
   }
 
-  if (children) {
-    return (
-      <div className={className}>
-        {React.Children.map(children, child => {
-          if (!React.isValidElement(child)) {
-            return null;
-          }
-          if (child.type === GotoPage) {
-            return pages.map(pageNumber =>
-              React.cloneElement(child, { pageNumber })
-            );
-          }
+  const pagesToDisplay = getPagesToDisplay(pages, displayedPages, page);
 
-          return child;
-        })}
-      </div>
-    );
-  }
+  const getCustomChild = () =>
+    React.Children.map(children, child => {
+      if (!React.isValidElement(child)) {
+        return null;
+      }
+      if (child.type === GotoPage) {
+        return pagesToDisplay.map(pageNumber =>
+          React.cloneElement(child, { pageNumber })
+        );
+      }
 
-  return (
-    <div className={className}>
+      return child;
+    });
+
+  const getGenericChild = () => (
+    <>
       <PreviousPage>
         <button>Previous</button>
       </PreviousPage>
-      {pages.map(pageNumber => (
+      {pagesToDisplay.map(pageNumber => (
         <GotoPage key={pageNumber} pageNumber={pageNumber}>
           <GenericPageButton pageNumber={pageNumber} />
         </GotoPage>
@@ -112,6 +149,14 @@ export function Pagination({ children, className }: PaginationProps) {
       <NextPage>
         <button>Next</button>
       </NextPage>
-    </div>
+    </>
+  );
+
+  const paginationChild = children ? getCustomChild() : getGenericChild();
+
+  return React.cloneElement(
+    component || <div />,
+    { className },
+    paginationChild
   );
 }

@@ -4,4 +4,4 @@ export { Body } from "./Body";
 export { Header } from "./Header";
 export { Table } from "./Table";
 export { Row } from "./Row";
-export { Pagination } from "./Pagination";
+export { Pagination, GotoPage, NextPage, PreviousPage } from "./Pagination";
